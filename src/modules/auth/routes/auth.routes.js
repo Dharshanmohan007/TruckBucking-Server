@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-router.post("/api/signup", (res,res)=>{
+router.post("/api/signup", (req,res)=>{
     res.json({
         success : true,
         message: "Signup Route Working"
