@@ -1,9 +1,9 @@
-import express from "express";
+const express = require("express");
+
 const router = express.Router();
-router.post("/api/signup", (req,res)=>{
-    res.json({
-        success : true,
-        message: "Signup Route Working"
-    })
-})
-export default router;
+
+const authController = require("../controllers/auth.controller")
+
+router.post("/signup", authController.signup);
+
+module.exports = router;
