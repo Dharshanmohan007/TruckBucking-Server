@@ -4,7 +4,8 @@ const router = express.Router();
 
 const authController = require("../controllers/auth.controller")
 const signupValidation = require("../validators/auth.validator")
+const vaidationMiddleware = require("../../../middleware/validation.middleware")
 
-router.post("/signup", signupValidation,authController.signup);
+router.post("/signup", signupValidation, vaidationMiddleware, authController.signup);
 
 module.exports = router;
