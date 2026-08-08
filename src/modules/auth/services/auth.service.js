@@ -8,5 +8,6 @@ const signup=async(userData)=>{
     }
     const hashedPassword = await passwordUtil.hashPassword(userData.password);
     const otp = otpgeneration.genereateOtp();
+    const otpExpiry = otpgeneration.otpExpiry();
 }
 module.exports={signup}
