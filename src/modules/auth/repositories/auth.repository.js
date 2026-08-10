@@ -6,11 +6,11 @@ const checkEmailExist = async(email)=>{
 }
 
 const createOTPVerification = async(userData)=>{
-    const [rows] = await db.execute("INSERT INTO otp_verification (name, email, phone, hashedpassword, otp, otp_expiry) VALUES(?, ?, ?, ?, ?, ?)",
+    const [result] = await db.execute("INSERT INTO otp_verification (name, email, phone, hashed_password, otp, otp_expiry) VALUES(?, ?, ?, ?, ?, ?)",
         [userData.name,
         userData.email,
         userData.phone,
-        userData.hashedpassword,
+        userData.hashed_password,
         userData.otp,
         userData.otp_expiry
         ])
