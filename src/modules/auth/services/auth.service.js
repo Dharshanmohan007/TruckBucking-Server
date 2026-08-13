@@ -1,22 +1,41 @@
 const authRepository = require('../repositories/auth.repository');
 const passwordUtil = require('../utils/password.util');
-const otpgeneration = require('../utils/otp.util');
-const signup=async(userData)=>{
-    const emailExist = await authRepository.checkEmailExist(userData.email)
-    if(emailExist){
+const otpGeneration = require('../utils/otp.util');
+
+const signup = async (userData) => {
+
+    const emailExist = await authRepository.checkEmailExist(userData.email);
+
+    if (emailExist) {
         throw new Error("Email Already Exists");
     }
-    const hashed_Password = await passwordUtil.hash_Password(userData.password);
-    const otp = otpgeneration.genereateOtp();
-    const otpExpiry = otpgeneration.otpExpiry();
-    const otpverificationData={
-        name:userData.name,
-        email:userData.email,
-        phone:userData.phone,
-        hashed_password:hashed_password,
-        otp:otp,
-        otpExpiry:otpExpiry
-    }
-    await authRepository.createOTPVerification(otpverificationData);
+
+    const hashedPassword = await passwordUtil.hashedPassword(userData.password);
+
+    const otp = otpGeneration.genereateOtp();
+
+    const otpExpiry = otpGeneration.otpExpiry();
+
+    const otpVerificationData = {
+        name: userData.name,
+        email: userData.email,
+        phone: userData.phone,
+        hashedPassword: hashedPassword,
+        otp: otp,
+        otpExpiry: otpExpiry
+    };
+
+    console.log("OTP Verification Data Service layer:", otpVerificationData);
+
+    await authRepository.createOTPVerification(otpVerificationData);
+
+};
+
+const verifyOTP = async(userData)=>{
+    const otpVerification = await authRepository.findOTPVerificationByEmail(userData.email);
 }
-module.exports={signup}
+
+module.exports = {
+    signup,
+    verifyOTP
+};
