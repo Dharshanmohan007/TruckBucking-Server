@@ -22,8 +22,25 @@ const findOTPVerificationByEmail = async(email)=>{
     return rows;
 }
 
+const createUser = async(userData)=>{
+    const [result] = await db.execute("INSERT INTO users (name, email, phone, hashed_password, role) VALUES(?,?,?,?,?)",
+    [
+        userData.name,
+        userData.email,
+        userData.phone,
+        userData.hashed_password,
+        userData.role
+    ])
+    return rows;
+}
+
+const deleteOTPVerification = async(email)=>{
+    const [result] = await db.execute("DELETE FROM otp_verification WHERE email=?"[email])
+    return result;
+}
 module.exports={
     checkEmailExist,
     createOTPVerification,
-    findOTPVerificationByEmail
+    findOTPVerificationByEmail,
+    createUser
 }
