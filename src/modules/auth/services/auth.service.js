@@ -10,19 +10,19 @@ const signup = async (userData) => {
         throw new Error("Email Already Exists");
     }
 
-    const hashedPassword = await passwordUtil.hashedPassword(userData.password);
+    const hashed_password = await passwordUtil.hashed_password(userData.password);
 
     const otp = otpGeneration.genereateOtp();
 
-    const otpExpiry = otpGeneration.otpExpiry();
+    const otp_expiry = otpGeneration.otp_expiry();
 
     const otpVerificationData = {
         name: userData.name,
         email: userData.email,
         phone: userData.phone,
-        hashedPassword: hashedPassword,
+        hashed_password: hashed_password,
         otp: otp,
-        otpExpiry: otpExpiry
+        otp_expiry: otp_expiry
     };
 
     console.log("OTP Verification Data Service layer:", otpVerificationData);
@@ -42,7 +42,7 @@ const verifyOTP = async(userData)=>{
     }
     const currentTime = new Date();
 
-    if(currentTime > new Date(otpVerificationData.otpExpiry)){
+    if(currentTime > new Date(otpVerificationData.otp_expiry)){
         throw new Error("OPT Expiried");
     }
 

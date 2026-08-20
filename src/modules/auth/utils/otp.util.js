@@ -3,12 +3,12 @@ const genereateOtp=()=>{
     return otp
 }
 
-const otpExpiry=()=>{
+const otp_expiry=()=>{
     const expiry = new Date()
     expiry.setMinutes(expiry.getMinutes() + 5) 
     return expiry
 }
 module.exports={
     genereateOtp, 
-    otpExpiry
+    otp_expiry
 }

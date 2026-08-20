@@ -11,9 +11,9 @@ const createOTPVerification = async(userData)=>{
         [userData.name,
         userData.email,
         userData.phone,
-        userData.hashedPassword,
+        userData.hashed_password,
         userData.otp,
-        userData.otpExpiry
+        userData.otp_expiry
         ])
 }
 
@@ -23,7 +23,8 @@ const findOTPVerificationByEmail = async(email)=>{
 }
 
 const createUser = async(userData)=>{
-    const [result] = await db.execute("INSERT INTO users (name, email, phone, hashed_password, role) VALUES(?,?,?,?,?)",
+    const [result] = await db.execute(
+        "INSERT INTO users (name, email, phone, hashed_password, role) VALUES(?,?,?,?,?)",
     [
         userData.name,
         userData.email,
@@ -31,16 +32,19 @@ const createUser = async(userData)=>{
         userData.hashed_password,
         userData.role
     ])
-    return rows;
+    return result;
 }
 
 const deleteOTPVerification = async(email)=>{
-    const [result] = await db.execute("DELETE FROM otp_verification WHERE email=?"[email])
+    const [result] = await db.execute(
+        "DELETE FROM otp_verification WHERE email = ?", 
+        [email])
     return result;
 }
 module.exports={
     checkEmailExist,
     createOTPVerification,
     findOTPVerificationByEmail,
-    createUser
+    createUser,
+    deleteOTPVerification
 }
