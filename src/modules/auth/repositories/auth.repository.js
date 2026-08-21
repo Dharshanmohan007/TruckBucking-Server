@@ -1,4 +1,5 @@
-const db = require('../../../config/db.js')
+const db = require('../../../config/db.js');
+const { otp_expiry } = require('../utils/otp.util.js');
 
 const checkEmailExist = async(email)=>{
     const [rows] = await db.execute("SELECT * FROM users WHERE email = ?", [email]);
@@ -22,8 +23,13 @@ const findOTPVerificationByEmail = async(email)=>{
     return rows;
 }
 
-const createUser = async(userData)=>{
-    const [result] = await db.execute(
+const updateOTPVerification = async(email, otp, otp_expiry)=>{
+    const[result] = await db.execute("UPDATE otp_verification SET otp = ?, otp_expiry = ? WHERE email = ?", [otp, otp_expiry, email])
+    return result;
+}
+
+const createUser = async(connection, userData)=>{
+    const [result] = await connection.execute(
         "INSERT INTO users (name, email, phone, hashed_password, role) VALUES(?,?,?,?,?)",
     [
         userData.name,
@@ -35,8 +41,8 @@ const createUser = async(userData)=>{
     return result;
 }
 
-const deleteOTPVerification = async(email)=>{
-    const [result] = await db.execute(
+const deleteOTPVerification = async(connection ,email)=>{
+    const [result] = await connection.execute(
         "DELETE FROM otp_verification WHERE email = ?", 
         [email])
     return result;
@@ -46,5 +52,6 @@ module.exports={
     createOTPVerification,
     findOTPVerificationByEmail,
     createUser,
-    deleteOTPVerification
+    deleteOTPVerification,
+    updateOTPVerification
 }
