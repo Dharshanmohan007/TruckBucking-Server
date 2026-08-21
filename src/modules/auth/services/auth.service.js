@@ -1,6 +1,7 @@
 const authRepository = require('../repositories/auth.repository');
 const passwordUtil = require('../utils/password.util');
 const otpGeneration = require('../utils/otp.util');
+const db = require('../../../config/db');
 
 const signup = async (userData) => {
 
@@ -46,9 +47,41 @@ const verifyOTP = async(userData)=>{
         throw new Error("OPT Expiried");
     }
 
+    const newUser={
+        name : otpVerificationData.name,
+        email : otpVerificationData.email,
+        phone : otpVerificationData.phone,
+        hashed_password : otpVerificationData.hashed_password,
+        role : "user",
+    };
+    const connection = await db.getConnection();
+    try{
+        await connection.beginTransaction();
+        await authRepository.createUser(connection, newUser);
+        await authRepository.deleteOTPVerification(connection, userData.email)
+        await connection.commit();
+    }
+    catch(error){
+        await connection.rollback();
+        throw error;
+    }
+    finally{
+        connection.release();
+    }
+}
+
+const resendOTP = async (userData) => {
+    const otpVerification = await authRepository.findOTPVerificationByEmail(userData.email)
+    if(otpVerification.length === 0){
+        throw new Error("No OTP Data was Found");
+    }
+    const otp = await otpGeneration.genereateOtp();
+    const otp_expiry = await otpGeneration.otp_expiry();
+    const result = await authRepository.updateOTPVerification(userData.email, otp, otp_expiry);
 }
 
 module.exports = {
     signup,
-    verifyOTP
+    verifyOTP,
+    resendOTP
 };

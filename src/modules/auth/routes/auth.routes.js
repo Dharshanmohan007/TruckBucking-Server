@@ -8,5 +8,6 @@ const vaidationMiddleware = require("../../../middleware/validation.middleware")
 
 router.post("/signup", signupValidation, vaidationMiddleware, authController.signup);
 router.post("/verify-otp", authController.verifyOTP);
+router.post("/resend-otp", authController.resendOTP)
 
 module.exports = router;
