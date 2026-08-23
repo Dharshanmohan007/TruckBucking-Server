@@ -34,7 +34,6 @@ const signup = async (userData) => {
 
 const verifyOTP = async(userData)=>{
     console.log("userData", userData.email);
-    
     const otpVerification = await authRepository.findOTPVerificationByEmail(userData.email);
     if(otpVerification.length === 0){
         throw new Error("No OTP data found ");
