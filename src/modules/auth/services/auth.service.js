@@ -33,6 +33,8 @@ const signup = async (userData) => {
 };
 
 const verifyOTP = async(userData)=>{
+    console.log("userData", userData.email);
+    
     const otpVerification = await authRepository.findOTPVerificationByEmail(userData.email);
     if(otpVerification.length === 0){
         throw new Error("No OTP data found ");
@@ -52,7 +54,7 @@ const verifyOTP = async(userData)=>{
         email : otpVerificationData.email,
         phone : otpVerificationData.phone,
         hashed_password : otpVerificationData.hashed_password,
-        role : "user",
+        role : "CUSTOMER",
     };
     const connection = await db.getConnection();
     try{
@@ -71,6 +73,8 @@ const verifyOTP = async(userData)=>{
 }
 
 const resendOTP = async (userData) => {
+    console.log(userData.email);
+    
     const otpVerification = await authRepository.findOTPVerificationByEmail(userData.email)
     if(otpVerification.length === 0){
         throw new Error("No OTP Data was Found");
@@ -78,6 +82,9 @@ const resendOTP = async (userData) => {
     const otp = await otpGeneration.genereateOtp();
     const otp_expiry = await otpGeneration.otp_expiry();
     const result = await authRepository.updateOTPVerification(userData.email, otp, otp_expiry);
+    if (result.affectedRows === 0){
+        throw new Error("OTP Updat Failed");
+    }
 }
 
 module.exports = {
