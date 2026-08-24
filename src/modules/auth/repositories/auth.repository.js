@@ -1,5 +1,6 @@
 const db = require('../../../config/db.js');
 const { otp_expiry } = require('../utils/otp.util.js');
+const { hashed_password } = require('../utils/password.util.js');
 
 const checkEmailExist = async(email)=>{
     const [rows] = await db.execute("SELECT * FROM users WHERE email = ?", [email]);
@@ -47,11 +48,17 @@ const deleteOTPVerification = async(connection ,email)=>{
         [email])
     return result;
 }
+
+const loginVerificationPassword=async(email, hashed_password)=>{
+    const [result] = await db.execute("SELECT * from users WHERE hashed_password = ?", [email, hashed_password]);
+    return result;
+}
 module.exports={
     checkEmailExist,
     createOTPVerification,
     findOTPVerificationByEmail,
     createUser,
     deleteOTPVerification,
-    updateOTPVerification
+    updateOTPVerification,
+    loginVerificationPassword
 }
