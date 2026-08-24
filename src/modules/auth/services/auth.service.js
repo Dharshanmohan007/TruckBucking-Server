@@ -86,8 +86,19 @@ const resendOTP = async (userData) => {
     }
 }
 
+const login=async(userData)=>{
+    const loginVerify = await authRepository.findOTPVerificationByEmail(userData.email)
+    if(loginVerify.length === 0){
+        throw new Error("Email was not found, Kindly use correct email for login");
+    }
+    if(userData.password === loginVerificationPassword.hashed_password){
+        throw new Error("Password Matched Successfully");
+    }
+}
+
 module.exports = {
     signup,
     verifyOTP,
-    resendOTP
+    resendOTP,
+    login
 };
