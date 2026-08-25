@@ -87,7 +87,7 @@ const resendOTP = async (userData) => {
 }
 
 const login=async(userData)=>{
-    const loginVerify = await authRepository.findOTPVerificationByEmail(userData.email)
+    const loginVerify = await authRepository.finduserByEmail(userData.email)
     if(loginVerify.length === 0){
         throw new Error("Email was not found, Kindly use correct email for login");
     }
