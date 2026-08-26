@@ -2,6 +2,7 @@ const authRepository = require('../repositories/auth.repository');
 const passwordUtil = require('../utils/password.util');
 const otpGeneration = require('../utils/otp.util');
 const db = require('../../../config/db');
+const jwtUtil = require('../utils/jwt.util');
 
 const signup = async (userData) => {
 
@@ -87,13 +88,24 @@ const resendOTP = async (userData) => {
 }
 
 const login=async(userData)=>{
-    const loginVerify = await authRepository.finduserByEmail(userData.email)
+    console.log("login userdata", userData);
+    
+    const loginVerify = await authRepository.finduserByEmail(userData.email);
+    console.log("login user email", userData.email);
+    
     if(loginVerify.length === 0){
         throw new Error("Email was not found, Kindly use correct email for login");
     }
-    if(userData.password === loginVerificationPassword.hashed_password){
-        throw new Error("Password Matched Successfully");
+    const user = loginVerify[0];
+
+    const loginPasswordHask = await passwordUtil.comparePassword(userData.password, user.hashed_password);
+    console.log("log reached loginPasswordHask funciton");
+    
+    if(!loginPasswordHask){
+        throw new Error("Invalide Crediemtials");
     }
+    const token = jwtUtil.generateToken(user);
+    return {user,token};
 }
 
 module.exports = {
