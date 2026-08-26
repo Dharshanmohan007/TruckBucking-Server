@@ -24,7 +24,17 @@ const signup = async (userData) => {
         phone: userData.phone,
         hashed_password: hashed_password,
         otp: otp,
-        otp_expiry: otp_expiry
+        otp_expiry: otp_expiry,
+        role: userData.role,
+        experience: userData.experience,
+        license_number : userData.license_number,
+        vehicle_number : userData.vehicle_number,
+        ton_capacity : userData.ton_capacity,
+        rc_number : userData.rc_number,
+        vehicle_status : userData.vehicle_status,
+        vehicle_name : userData.vehicle_name,
+        min_capacity : userData.min_capacity,
+        max_capacity : userData.max_capacity
     };
 
     console.log("OTP Verification Data Service layer:", otpVerificationData);
@@ -54,12 +64,75 @@ const verifyOTP = async(userData)=>{
         email : otpVerificationData.email,
         phone : otpVerificationData.phone,
         hashed_password : otpVerificationData.hashed_password,
-        role : "CUSTOMER",
+        role: otpVerificationData.role,
     };
     const connection = await db.getConnection();
     try{
         await connection.beginTransaction();
-        await authRepository.createUser(connection, newUser);
+        const userResult = await authRepository.createUser(connection, newUser);
+
+        const accountId = userResult.insertId;
+
+        // 2. If role is DRIVER, insert driver details
+        if (otpVerificationData.role === "DRIVER") {
+
+            // -------------------------------------------------
+            // Create Driver
+            // -------------------------------------------------
+            const driverResult =
+                await authRepository.createDriver(
+                    connection,
+                    {
+                        account_Id: accountId,
+                        experience: otpVerificationData.experience,
+                        license_number: otpVerificationData.license_number
+                    }
+                );
+
+            const driverId = driverResult.insertId;
+
+            console.log("Created Driver ID:", driverId);
+
+
+            // -------------------------------------------------
+            // Create Vehicle Type
+            // -------------------------------------------------
+            const vehicleTypeResult =
+                await authRepository.createVehicleType(
+                    connection,
+                    {
+                        vehicle_name: otpVerificationData.vehicle_name,
+                        min_capacity: otpVerificationData.min_capacity,
+                        max_capacity: otpVerificationData.max_capacity
+                    }
+                );
+
+            const vehicle_Type_Id = vehicleTypeResult.insertId;
+
+            console.log("Created Vehicle Type ID:", vehicle_Type_Id );
+
+
+            // -------------------------------------------------
+            // Create Vehicle
+            // -------------------------------------------------
+            const vehicleResult =
+                await authRepository.createVehicle(
+                    connection,
+                    {
+                        driverId: driverId,
+                        vehicleTypeId: vehicle_Type_Id,
+                        vehicle_number: otpVerificationData.vehicle_number,
+                        ton_capacity: otpVerificationData.ton_capacity,
+                        rc_number: otpVerificationData.rc_number
+                    }
+                );
+
+            console.log(
+                "Created Vehicle ID:",
+                vehicleResult.insertId
+            );
+        }
+
         await authRepository.deleteOTPVerification(connection, userData.email)
         await connection.commit();
     }
