@@ -49,12 +49,9 @@ const deleteOTPVerification = async(connection ,email)=>{
     return result;
 }
 
-// const loginVerificationPassword=async(email, hashed_password)=>{
-//     const [result] = await db.execute("SELECT * from users WHERE hashed_password = ?", [email, hashed_password]);
-//     return result;
-// }
-
 const finduserByEmail=async(email)=>{
+    console.log("found user email", email);
+    
     const [result] = await db.execute("SELECT * FROM users WHERE email = ?", [email]);
     return result;
 }
@@ -65,6 +62,5 @@ module.exports={
     createUser,
     deleteOTPVerification,
     updateOTPVerification,
-    loginVerificationPassword,
     finduserByEmail
 }

@@ -55,16 +55,28 @@ const resendOTP=async(req,res)=>{
 
 const login=async(req,res)=>{
     try{
-        await authService.login(req.body);
+        const result = await authService.login(req.body);
+        const user = result.user;
+        const token = result.token;
+
         res.status(200).json({
-            success:true,
-            message:"Login Successfully"
-        })
-    }
+            success: true,
+            message: "Login Successfully",
+            token: token,
+            user: {
+                user_id: user.user_id,
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                role: user.role
+            }
+        });
+    }   
     catch(error){
+        console.error("LOGIN CONTROLLER ERROR:", error);
         res.status(500).json({
             success:false,
-            message:"Internal Server Error"
+            message:"Internal Server Error not went to service layer"
         })
     }
 }
