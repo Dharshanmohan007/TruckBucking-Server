@@ -79,10 +79,10 @@ const createVehicleType = async(connection, driverData)=>{
 
 const createVehicle = async(connection, driverData)=>{
     const [result] = await connection.execute(
-        "INSERT INTO vehicles (driverId, vehicle_type_id, vehicle_number, ton_capacity, rc_number) VALUES(?, ?, ?, ?, ?)",
+        "INSERT INTO vehicles (driver_Id, vehicle_type_id, vehicle_number, ton_capacity, rc_number) VALUES(?, ?, ?, ?, ?)",
         [
             driverData.driverId,
-            driverData.Vehicle_Type_Id,
+            driverData.vehicleTypeId,
             driverData.vehicle_number,
             driverData.ton_capacity,
             driverData.rc_number,
