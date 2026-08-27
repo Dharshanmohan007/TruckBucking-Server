@@ -3,6 +3,7 @@ const cors = require("cors");
 
 const authRoutes = require("./modules/auth/routes/auth.routes")
 const locationRoutes  =require("./modules/location/routes/location.routes")
+const vehicleTypes = require("./modules/vehicleTypes/routes/vehicleType.routes");
 
 const app = express();
 
@@ -21,5 +22,6 @@ app.get("/", (req, res) => {
 // Auth Routes
 app.use("/api/auth", authRoutes);
 app.use("/api", locationRoutes);
+app.unsubscribe("/api", vehicleTypes);
 
 module.exports = app;
