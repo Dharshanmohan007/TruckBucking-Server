@@ -1,7 +1,7 @@
 const vehicleTypeService = require("../services/vehicleType.service");
 const vehicleController=async(req,res)=>{
     try{
-        const result = await vehicleTypeService.getVehicleTypeService(req,body);
+        const result = await vehicleTypeService.getVehicleTypeService(req.query.weight);
         res.status(200).json({
             success:true,
             message:"vehileType fetched Successfully",
